@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+import ErrorAlert from "../layout/ErrorAlert";
 import { createReservation } from "../utils/api";
 import ReservationForm from "./ReservationForm";
 
@@ -85,6 +86,7 @@ function CreateReservation() {
 
   return (
     <div>
+      <ErrorAlert error={error} />
       <ReservationForm
         form={form}
         changeHandler={changeHandler}
