@@ -11,12 +11,12 @@ async function create(reservation) {
 //List by date in order of time
 async function list(reservation_date) {
     return knex("reservations")
-        .select("*")
-        .where({reservation_date})
-        .whereNot({status:"finished"})
-        .whereNot({status: "cancelled"})
-        .orderBy("reservation_time")
-};
+      .select("*")
+      .where({ reservation_date })
+      .whereNotIn("status", ["finished", "cancelled"])
+      .orderBy("reservations.reservation_time");
+  }
+  
 
 //Read
 async function read(reservation_id) {
@@ -29,16 +29,23 @@ async function read(reservation_id) {
 //Update
 async function update(reservation) {
     return knex("reservations")
-        .update(reservation, "*")
         .where({reservation_id: reservation.reservation_id})
+        .update(reservation, "*")
         .then((update) => update[0])
 };
 
-
+//Update reservation status
+async function updateStatus(reservation_id, status) {
+    return knex("reservations")
+        .where({reservation_id})
+        .update({status}, "*")
+        .then((update) => update[0])
+}
 
 module.exports = {
     create,
     list,
     read,
-    update
+    update,
+    updateStatus,
 }

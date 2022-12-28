@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {useHistory} from "react-router-dom";
 import { listReservations } from "../utils/api";
-import ErrorAlert from "../layout/ErrorAlert";
 import useQuery from "../utils/useQuery";
 import {next,previous,today} from "../utils/date-time"
 import ViewReservation from "../reservations/ViewReservation";
@@ -29,11 +28,10 @@ useEffect(() => {
 
   async function loadDashboard() {
     try {
-      setReservationsError([]);
+      setReservationsError(null);
       const reservationDate = await listReservations({ date }, abortController.signal);
       setReservations(reservationDate);
     } catch (error) {
-      setReservations([]);
       setReservationsError([error.message]);
     }
   }
@@ -73,7 +71,6 @@ useEffect(() => {
       <div className="d-md-flex mb-3">
         <h4 className="mb-0">Reservations for: {date}</h4>
       </div>
-      <ErrorAlert error={reservationsError} />
       
       <div>{reservationList}</div>
     </main>

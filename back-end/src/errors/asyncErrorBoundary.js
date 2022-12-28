@@ -1,4 +1,4 @@
-function asyncErrorBoundary(delegate, defaultStatus) {
+function asyncBoundaryError(delegate, defaultStatus) {
     return (req, res, next) => {
       Promise.resolve()
         .then(() => delegate(req, res, next))
@@ -9,4 +9,4 @@ function asyncErrorBoundary(delegate, defaultStatus) {
     };
   }
   
-  module.exports = asyncErrorBoundary;
+  module.exports = asyncBoundaryError;

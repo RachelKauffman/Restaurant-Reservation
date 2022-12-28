@@ -1,5 +1,6 @@
 const service = require("./reservations.service");
 const asyncBoundaryError = require("../errors/asyncErrorBoundary");
+const { whereNotExists } = require("../db/connection");
 
 //Middleware
 
@@ -24,13 +25,6 @@ function hasValidProperties(req, res, next) {
     });
   }
 
-  /**
-   * Checking Properties :
-   * 1st. if no property it needs to require one.
-   * 2nd. requires the people to be a Number.
-   * 3rd. requires the reservation date to be formatted correctly.
-   * 4th. requires the time to be formatted correctly.
-   */
   VALID_PROPERTIES.forEach((property) => {
     if (!data[property]) {
       return next({
@@ -45,7 +39,7 @@ function hasValidProperties(req, res, next) {
         message: `Requires ${property} to be a number`,
       });
     }
-
+    
     if (
       property === "reservation_date" &&
       !dateFormatted.test(data.reservation_date)
@@ -69,7 +63,7 @@ function hasValidProperties(req, res, next) {
   next();
 }
 
-// Verifying conditions of days
+// Verifying date conditions
 function isValidDay(req, res, next) {
   const { data } = req.body;
   const reservationDate = new Date(
@@ -84,15 +78,10 @@ function isValidDay(req, res, next) {
     "Friday",
     "Saturday",
   ];
+
   let day = days[reservationDate.getDay()];
   let time = data.reservation_time;
-  if (reservationDate < new Date() && day === "Tuesday") {
-    return next({
-      status: 400,
-      message:
-        "Reservations can only be created on a future date, excluding Tuesdays",
-    });
-  }
+ 
   if (reservationDate < new Date()) {
     return next({
       status: 400,
@@ -114,6 +103,22 @@ function isValidDay(req, res, next) {
   next();
 }
 
+async function reservationExists(req,res,next) {
+  const {reservation_id} = req.params;
+  const reservation = await service.read(reservation_id);
+  if(reservation) {
+    res.locals.reservation = reservation;
+    return next();
+  } else {
+    return next({
+    status:404,
+    message: `Reservation ${reservation_id} does not exist.`,
+  })
+}
+}
+
+
+
 /*-------------------------------------------------------------------------------------------*/
 //create a reservation
 async function create(req, res) {
@@ -121,10 +126,11 @@ async function create(req, res) {
   res.status(201).json({ data: reservation });
 }
 
-//List handler for reservation resources
+//List handler for reservations
 async function list(req, res) {
-  const { data } = res.locals;
-  res.json({ data: data });
+  const { date } = req.query;
+  reservations = await service.list(date)
+  res.json({data:reservations})
 }
 
 //reads a reservation
@@ -145,10 +151,29 @@ async function updateReservation(req, res) {
   res.json({ data: updatedReservation });
 }
 
+//update reservation status
+async function updateStatus(req,res,next) {
+  const updated ={
+    ...res.locals.reservation,
+    status:res.locals.status,
+  };
+  service
+    .update(updated)
+    .then((data) => res.json({data}))
+    .catch(next)
+}
+
 module.exports = {
-  create: [hasValidProperties, isValidDay, asyncErrorBoundary(create)],
-  list: [asyncErrorBoundary(list)],
-  read,
-  update: [, hasValidProperties, asyncErrorBoundary(update)],
-  updateStatus: [asyncErrorBoundary(updateStatus)],
+  create: [hasValidProperties, isValidDay, asyncBoundaryError(create)],
+  list: [asyncBoundaryError(list)],
+  read: [asyncBoundaryError(reservationExists), read],
+  updateReservation: [
+    hasValidProperties,
+    asyncBoundaryError(updateReservation),
+    asyncBoundaryError(reservationExists),
+  ],
+  updateStatus: [
+    asyncBoundaryError(reservationExists),
+    asyncBoundaryError(updateStatus)
+  ]
 };
