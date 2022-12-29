@@ -93,10 +93,10 @@ const tablesList = tables.map((table) => {
           Next
         </button>
       </div>
-      <h4 className="mb-0">Reservations for: {date}</h4>
-        <ErrorAlert error={reservationsError} />
-        <ErrorAlert error={tablesError} />
+      <h4 className="mb-0 text-center">Reservations for: {date}</h4>
+     
       <div>
+      <ErrorAlert error={reservationsError} />
         <div>{reservationList}</div>
       </div>
       <div>

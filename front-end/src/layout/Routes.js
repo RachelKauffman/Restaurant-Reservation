@@ -1,7 +1,7 @@
 import React from "react";
-
 import { Redirect, Route, Switch } from "react-router-dom";
 import Dashboard from "../dashboard/Dashboard";
+import Seat from "../tables/seat";
 import CreateReservation from "../reservations/CreateReservation";
 import TableForm from "../tables/TableForm";
 import NotFound from "./NotFound";
@@ -26,14 +26,17 @@ function Routes() {
       <Route exact={true} path="/reservations/new">
         <CreateReservation />
       </Route>
-      <Route path="/dashboard">
-        <Dashboard date={today()} />
+      <Route path="/reservations/:reservation_id/seat">
+        <Seat />
       </Route>
       <Route path="/tables/new">
         <TableForm />
       </Route>
       <Route exact={true} path="/tables">
         <Redirect to={"/dashboard"} />
+      </Route>
+      <Route path="/dashboard">
+        <Dashboard date={today()} />
       </Route>
       <Route>
         <NotFound />

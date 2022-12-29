@@ -37,6 +37,7 @@ const Tables = ({ table }) => {
       <></>
     );
 
+
   return (
       <div>
           <ErrorAlert error={error} />
