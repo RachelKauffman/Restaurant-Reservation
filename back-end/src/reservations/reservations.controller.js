@@ -1,6 +1,5 @@
 const service = require("./reservations.service");
 const asyncBoundaryError = require("../errors/asyncErrorBoundary");
-const { whereNotExists } = require("../db/connection");
 
 //Middleware
 
@@ -81,7 +80,13 @@ function isValidDay(req, res, next) {
 
   let day = days[reservationDate.getDay()];
   let time = data.reservation_time;
- 
+  if(reservationDate < new Date() && reservationDate === "Tuesday") {
+    return next({
+      status:400,
+      message:"Reservations must be created for a future date and not on a Tuesday"
+    })
+  }
+  
   if (reservationDate < new Date()) {
     return next({
       status: 400,
@@ -119,7 +124,6 @@ async function reservationExists(req,res,next) {
 
 
 
-/*-------------------------------------------------------------------------------------------*/
 //create a reservation
 async function create(req, res) {
   const reservation = await service.create(req.body.data);

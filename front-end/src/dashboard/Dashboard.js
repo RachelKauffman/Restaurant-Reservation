@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import {useHistory} from "react-router-dom";
-import { listReservations } from "../utils/api";
+import { listReservations, listTables } from "../utils/api";
 import useQuery from "../utils/useQuery";
 import {next,previous,today} from "../utils/date-time"
 import ViewReservation from "../reservations/ViewReservation";
+import Tables from "../tables/Tables"
+import ErrorAlert from "../layout/ErrorAlert";
 
 /**
  * Defines the dashboard page.
@@ -13,7 +15,9 @@ import ViewReservation from "../reservations/ViewReservation";
  */
 function Dashboard({ date }) {
   const [reservations, setReservations] = useState([]);
+  const [tables, setTables] = useState([])
   const [reservationsError, setReservationsError] = useState(null);
+  const [tablesError, setTablesError] = useState(null)
   const history = useHistory();
 
   //will use date from url for each new date
@@ -39,6 +43,23 @@ useEffect(() => {
   return () => abortController.abort();
 }, [date]);
 
+//load all tables
+useEffect(() => {
+  const abortController = new AbortController();
+
+  async function loadTables() {
+    try{
+      setTablesError(null);
+      const tableList = await listTables(abortController.signal);
+      setTables(tableList);
+    } catch (error) {
+      setTablesError([error.message])
+    }
+  }
+  loadTables()
+  return () => abortController.abort()
+}, [])
+
   const reservationList = reservations.map((reservation) => {
     if (reservation.status === "cancelled" || reservation.status === "finished")
       return null;
@@ -50,7 +71,11 @@ useEffect(() => {
     );
   });
 
-
+const tablesList = tables.map((table) => {
+  return (
+<Tables key={table.table_id} table={table} />
+  )
+})
 
   return (
     <main>
@@ -68,11 +93,16 @@ useEffect(() => {
           Next
         </button>
       </div>
-      <div className="d-md-flex mb-3">
-        <h4 className="mb-0">Reservations for: {date}</h4>
+      <h4 className="mb-0">Reservations for: {date}</h4>
+        <ErrorAlert error={reservationsError} />
+        <ErrorAlert error={tablesError} />
+      <div>
+        <div>{reservationList}</div>
       </div>
-      
-      <div>{reservationList}</div>
+      <div>
+        <h4 className="text-center">Tables</h4>
+      </div>
+      <div>{tablesList}</div>
     </main>
   )
 };

@@ -1,4 +1,11 @@
-function ReservationForm({form, changeHandler, submitHandler, cancelHandler}) {
+import React from "react";
+import { useHistory } from "react-router-dom";
+
+
+function ReservationForm({form, changeHandler, submitHandler}) {
+    
+const history = useHistory();
+
     return(
         <div>
             <h1>New Reservation</h1>
@@ -72,7 +79,7 @@ function ReservationForm({form, changeHandler, submitHandler, cancelHandler}) {
                 <div>
                 <button className="btn btn-secondary" type="submit" >Submit</button>
                 &nbsp;
-                <button className="btn btn-secondary" type="button"  onClick={cancelHandler}>Cancel</button>
+                <button className="btn btn-secondary" type="button" onClick={() => history.goBack()}>Cancel</button>
                 </div>
             </form>
         </div>

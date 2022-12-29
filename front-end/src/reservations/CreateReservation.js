@@ -79,10 +79,6 @@ function CreateReservation() {
     };
   };
 
-  const cancelHandler = (event) => {
-    event.preventDefault();
-    history.go(-1);
-  };
 
   return (
     <div>
@@ -91,7 +87,6 @@ function CreateReservation() {
         form={form}
         changeHandler={changeHandler}
         submitHandler={submitHandler}
-        cancelHandler={cancelHandler}
       />
     </div>
   );
