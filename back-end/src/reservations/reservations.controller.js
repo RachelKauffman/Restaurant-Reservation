@@ -120,6 +120,18 @@ function isBooked(req,res,next) {
   next();
 }
 
+function isFinished(req,res,next) {
+  const {reservation_id} = req.params;
+  const status = res.locals.reservation.status;
+  if (status === "finished") {
+    return next ({
+      status: 400,
+      message: `Reservatoin ${reservation_id} is already finished and cannot be updated`
+    })
+  }
+  next();
+}
+
 async function reservationExists(req,res,next) {
   const {reservation_id} = req.params;
   const reservation = await service.read(reservation_id);
@@ -134,7 +146,19 @@ async function reservationExists(req,res,next) {
 }
 }
 
-
+function mobileIsNumber (req,res,next) {
+  const {data = {} } = req.body;
+  const check =  /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im.test(
+    data["mobile_number"]
+  );
+  if (!check) {
+    return next({
+      status:404,
+      message: "Phone number but be valid"
+    })
+  }
+  next();
+}
 
 
 //create a reservation
@@ -159,6 +183,7 @@ async function list(req, res) {
 async function read(req, res) {
   res.json({ data: res.locals.reservation });
 }
+
 
 //update reservation
 async function updateReservation(req, res) {
@@ -199,17 +224,25 @@ function validStatus(req,res,next) {
 }
 
 module.exports = {
-  create: [hasValidProperties, isValidDay, isBooked, asyncBoundaryError(create)],
+  create: [
+    hasValidProperties,
+    isValidDay,
+    isBooked,
+    mobileIsNumber,
+    asyncBoundaryError(create),
+  ],
   list: [asyncBoundaryError(list)],
   read: [asyncBoundaryError(reservationExists), read],
   updateReservation: [
-    hasValidProperties,
-    asyncBoundaryError(updateReservation),
     asyncBoundaryError(reservationExists),
+    hasValidProperties,
+    mobileIsNumber,
+    asyncBoundaryError(updateReservation),
   ],
   updateStatus: [
     asyncBoundaryError(reservationExists),
     validStatus,
-    asyncBoundaryError(updateStatus)
-  ]
+    isFinished,
+    asyncBoundaryError(updateStatus),
+  ],
 };

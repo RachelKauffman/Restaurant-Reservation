@@ -52,7 +52,7 @@ const TableForm = () => {
       <div>
         <ErrorAlert className="alert alert-danger" error={error} />
         <div>
-          <h1>
+          <h1 className="center-text">
             Create a New Table
           </h1>
           <form onSubmit={submitHandler}>
@@ -68,6 +68,7 @@ const TableForm = () => {
                 min={2}
               />
             </label>
+            &nbsp;
             <label htmlFor="capacity">
               <h5>Table Capacity:</h5>
               <input

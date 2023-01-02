@@ -20,9 +20,11 @@ async function list(reservation_date) {
 //List by phone number
 async function listByNumber(mobile_number) {
     return knex("reservations")
-        .select("*")
-        .where({mobile_number})
-        .orderBy("reservation_date")
+        .whereRaw(
+            "translate(mobile_number, '() -', '') like ?",
+            `%${mobile_number.replace(/\D/g, "")}%`
+        )
+        .orderBy("reservation_date");
 }
 
 //Read
@@ -36,7 +38,6 @@ async function read(reservation_id) {
 //Update
 async function update(reservation) {
     return knex("reservations")
-        .select("*")
         .where({reservation_id: reservation.reservation_id})
         .update(reservation, "*")
         .then((update) => update[0])
