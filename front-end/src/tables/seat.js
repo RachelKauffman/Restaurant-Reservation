@@ -5,20 +5,19 @@ import ErrorAlert from "../layout/ErrorAlert";
 
 function Seat() {
     const initialForm = {table_id: ""};
-
+    const abortController = new AbortController();
     const [reservation, setReservation] = useState({people: 0});
     const [error, setError] = useState(null);
     const [tables, setTables] = useState([]);
     const [form, setForm] = useState(initialForm);
     const {reservation_id} = useParams();
     const history = useHistory();
-    const abortController = new AbortController();
 
     //fetches reservation and table info from api
     useEffect(() => {
         const initial = {table_id: ""};
         setForm(initial);
-
+        const abortController = new AbortController();
         async function fetchReservation() {
             try{
                 const getData = await readReservation(reservation_id, abortController.signal);
@@ -83,6 +82,7 @@ function Seat() {
                             <h4>Seat Table:</h4>
                             <select name="table_id" onChange={changeHandler}>
                                 <option>Select Table</option>
+                                {tableOptions}
                             </select>
                         </label>
                         <button className="btn btn-secondary" type="submit">

@@ -8,7 +8,7 @@ const history = useHistory();
 
     return(
         <div>
-            <h1>New Reservation</h1>
+         
             <form onSubmit={submitHandler}>
                 <div className="form-group">
                     <label htmlFor="first_name">First Name:</label>

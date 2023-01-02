@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import {useHistory} from "react-router-dom";
-import { listReservations, listTables } from "../utils/api";
+import { useHistory } from "react-router-dom";
 import useQuery from "../utils/useQuery";
-import {next,previous,today} from "../utils/date-time"
-import ViewReservation from "../reservations/ViewReservation";
-import Tables from "../tables/Tables"
+import { listReservations, listTables } from "../utils/api";
+import { next, previous, today } from "../utils/date-time";
 import ErrorAlert from "../layout/ErrorAlert";
+import ViewReservation from "../reservations/ViewReservation";
+import Tables from "../tables/Tables";
 
 /**
  * Defines the dashboard page.
@@ -13,53 +13,65 @@ import ErrorAlert from "../layout/ErrorAlert";
  *  the date for which the user wants to view reservations.
  * @returns {JSX.Element}
  */
+
 function Dashboard({ date }) {
   const [reservations, setReservations] = useState([]);
-  const [tables, setTables] = useState([])
   const [reservationsError, setReservationsError] = useState(null);
-  const [tablesError, setTablesError] = useState(null)
+
+  const [tables, setTables] = useState([]);
+  const [tableError, setTableError] = useState(null);
+
   const history = useHistory();
+ //will use date from url for each new date
+ const dateQuery = useQuery().get("date");
+ if (dateQuery) {
+   date = dateQuery;
+ }
+  /**
+   * calling on the api to get our reservations by
+   * a specific date.
+   * @returns listReservations & tables
+   */
+  useEffect(() => {
+    const abortController = new AbortController();
 
-  //will use date from url for each new date
-  const dateQuery = useQuery().get("date");
-  if (dateQuery) {
-    date = dateQuery;
-  }
-   
-//load reservations by date
-useEffect(() => {
-  const abortController = new AbortController();
-
-  async function loadDashboard() {
-    try {
-      setReservationsError(null);
-      const reservationDate = await listReservations({ date }, abortController.signal);
-      setReservations(reservationDate);
-    } catch (error) {
-      setReservationsError([error.message]);
+    async function loadDashboard() {
+      try {
+        setReservationsError([]);
+        const reservationDate = await listReservations({ date }, abortController.signal);
+        setReservations(reservationDate);
+      } catch (error) {
+        setReservations([]);
+        setReservationsError([error.message]);
+      }
     }
-  }
-  loadDashboard();
-  return () => abortController.abort();
-}, [date]);
+    loadDashboard();
+    return () => abortController.abort();
+  }, [date]);
 
-//load all tables
-useEffect(() => {
-  const abortController = new AbortController();
+  //Load tables
+  useEffect(() => {
+    const abortController = new AbortController();
 
-  async function loadTables() {
-    try{
-      setTablesError(null);
-      const tableList = await listTables(abortController.signal);
-      setTables(tableList);
-    } catch (error) {
-      setTablesError([error.message])
+    async function loadTables() {
+      try {
+        setTableError([]);
+        const tableList = await listTables(abortController.signal);
+        setTables(tableList);
+      } catch (error) {
+        setTables([]);
+        setTableError([error.message]);
+      }
     }
-  }
-  loadTables()
-  return () => abortController.abort()
-}, [])
+    loadTables();
+    return () => abortController.abort();
+  }, []);
 
+
+  /**
+   * @reservationlist fetches customers with dates of today, tomorrow, or previous date.
+   * @tablesList fetches ....
+   */
   const reservationList = reservations.map((reservation) => {
     if (reservation.status === "cancelled" || reservation.status === "finished")
       return null;
@@ -71,40 +83,52 @@ useEffect(() => {
     );
   });
 
-const tablesList = tables.map((table) => {
-  return (
-<Tables key={table.table_id} table={table} />
-  )
-})
+  const tablesList = tables.map((table) => (
+    <Tables key={table.table_id} table={table} />
+  ));
+  /**
+   * @previous date - needs to call a function instead of an object when inside the return ui
+   */
 
   return (
     <main>
-      <h1>Dashboard</h1>
-      <div>
-        <button className="btn btn-dark" onClick={() => history.push(`/dashboard?date=${previous(date)}`)}>
+      <h1 className="text-center" style={{ marginTop: "15px" }}>
+        Dashboard
+      </h1>
+     
+      <div className="d-md-flex mb-3">
+        <button
+          className="btn btn-dark"
+          style={{ padding: "7px 15px", marginRight: "10px" }}
+          onClick={() => history.push(`/dashboard?date=${previous(date)}`)}
+        >
           Previous
         </button>
-        &nbsp;
-        <button className="btn btn-dark" onClick={() => history.push(`/dashboard?date=${today()}`)}>
+        <button
+          className="btn btn-info"
+          style={{ padding: "7px 15px", marginRight: "10px" }}
+          onClick={() => history.push(`/dashboard?date=${today()}`)}
+        >
           Today
         </button>
-        &nbsp;
-        <button className="btn btn-dark" onClick={() => history.push(`/dashboard?date=${next(date)}`)}>
+        <button
+          className="btn btn-dark"
+          style={{ padding: "7px 15px", marginRight: "10px" }}
+          onClick={() => history.push(`/dashboard?date=${next(date)}`)}
+        >
           Next
         </button>
       </div>
-      <h4 className="mb-0 text-center">Reservations for: {date}</h4>
-     
+      <h3>Reservations for: {date}</h3>
       <div>
-      <ErrorAlert error={reservationsError} />
         <div>{reservationList}</div>
       </div>
       <div>
-        <h4 className="text-center">Tables</h4>
+        <h3 className="mt-4 text-center">Tables</h3>
+        <div>{tablesList}</div>
       </div>
-      <div>{tablesList}</div>
     </main>
-  )
-};
+  );
+}
 
 export default Dashboard;

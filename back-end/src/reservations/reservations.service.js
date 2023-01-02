@@ -17,6 +17,13 @@ async function list(reservation_date) {
       .orderBy("reservations.reservation_time");
   }
   
+//List by phone number
+async function listByNumber(mobile_number) {
+    return knex("reservations")
+        .select("*")
+        .where({mobile_number})
+        .orderBy("reservation_date")
+}
 
 //Read
 async function read(reservation_id) {
@@ -29,6 +36,7 @@ async function read(reservation_id) {
 //Update
 async function update(reservation) {
     return knex("reservations")
+        .select("*")
         .where({reservation_id: reservation.reservation_id})
         .update(reservation, "*")
         .then((update) => update[0])
@@ -45,6 +53,7 @@ async function updateStatus(reservation_id, status) {
 module.exports = {
     create,
     list,
+    listByNumber,
     read,
     update,
     updateStatus,

@@ -82,6 +82,7 @@ function CreateReservation() {
 
   return (
     <div>
+     <h1 className="center-text">New Reservation</h1>
       <ErrorAlert error={error} />
       <ReservationForm
         form={form}
@@ -92,4 +93,4 @@ function CreateReservation() {
   );
 }
 
-export default CreateReservation;
+export default CreateReservation; 

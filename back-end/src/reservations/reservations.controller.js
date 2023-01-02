@@ -62,7 +62,7 @@ function hasValidProperties(req, res, next) {
   next();
 }
 
-// Verifying date conditions
+// Verifies date conditions
 function isValidDay(req, res, next) {
   const { data } = req.body;
   const reservationDate = new Date(
@@ -108,6 +108,18 @@ function isValidDay(req, res, next) {
   next();
 }
 
+//validates reservation status for editing
+function isBooked(req,res,next) {
+  const {data} = req.body;
+  if (data.status === "seated" || data.status === "finished") {
+    return next({
+      status:400,
+      message:"Reservation cannot be edited while seated or finished"
+    })
+  }
+  next();
+}
+
 async function reservationExists(req,res,next) {
   const {reservation_id} = req.params;
   const reservation = await service.read(reservation_id);
@@ -115,12 +127,13 @@ async function reservationExists(req,res,next) {
     res.locals.reservation = reservation;
     return next();
   } else {
-    return next({
-    status:404,
+  next({
+    status: 404,
     message: `Reservation ${reservation_id} does not exist.`,
   })
 }
 }
+
 
 
 
@@ -132,15 +145,19 @@ async function create(req, res) {
 
 //List handler for reservations
 async function list(req, res) {
-  const { date } = req.query;
-  reservations = await service.list(date)
+  const { date, mobile_number } = req.query;
+  let reservations;
+  if(date) {
+    reservations = await service.list(date)
+  } else if (mobile_number) {
+    reservations = await service.listByNumber(mobile_number);
+   }
   res.json({data:reservations})
 }
 
 //reads a reservation
 async function read(req, res) {
-  const { reservation } = res.locals;
-  res.json({ data: reservation });
+  res.json({ data: res.locals.reservation });
 }
 
 //update reservation
@@ -167,8 +184,22 @@ async function updateStatus(req,res,next) {
     .catch(next)
 }
 
+function validStatus(req,res,next) {
+  const {status} = req.body.data;
+  const validStatuses = ["booked", "cancelled", "finished", "seated"]
+  if(validStatuses.includes(status)) {
+    res.locals.status = status;
+    next();
+  } else {
+    next ({
+      status:400,
+      message:"Status unknown"
+    })
+  }
+}
+
 module.exports = {
-  create: [hasValidProperties, isValidDay, asyncBoundaryError(create)],
+  create: [hasValidProperties, isValidDay, isBooked, asyncBoundaryError(create)],
   list: [asyncBoundaryError(list)],
   read: [asyncBoundaryError(reservationExists), read],
   updateReservation: [
@@ -178,6 +209,7 @@ module.exports = {
   ],
   updateStatus: [
     asyncBoundaryError(reservationExists),
+    validStatus,
     asyncBoundaryError(updateStatus)
   ]
 };
