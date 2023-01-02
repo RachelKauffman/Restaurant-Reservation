@@ -126,7 +126,7 @@ function isFinished(req,res,next) {
   if (status === "finished") {
     return next ({
       status: 400,
-      message: `Reservatoin ${reservation_id} is already finished and cannot be updated`
+      message: `Reservation ${reservation_id} is already finished and cannot be updated`
     })
   }
   next();

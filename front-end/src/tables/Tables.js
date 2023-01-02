@@ -27,7 +27,7 @@ const Tables= ({ table }) => {
       const finishTable = reservation_id ? (
         <div>
           <button
-            className="btn btn-danger"
+            className="btn btn-outline-danger"
             data-table-id-finish={table_id}
             onClick={handleClick}
           >Finish

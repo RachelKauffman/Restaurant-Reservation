@@ -27,6 +27,9 @@ function Dashboard({ date }) {
  if (dateQuery) {
    date = dateQuery;
  }
+
+ const dateObj = new Date(`${date} PDT`)
+ const dateString = dateObj.toDateString();
   /**
    * calling on the api to get our reservations by
    * a specific date.
@@ -92,40 +95,43 @@ function Dashboard({ date }) {
 
   return (
     <main>
-      <h1 className="text-center" style={{ marginTop: "15px" }}>
+      <div >
+      <h1 className="text-center">
         Dashboard
       </h1>
-     
-      <div className="d-md-flex mb-3">
+      <div className="d-md-flex justify-content-center mb-3">
         <button
-          className="btn btn-dark"
-          style={{ padding: "7px 15px", marginRight: "10px" }}
+          className="btn btn-outline-dark"
           onClick={() => history.push(`/dashboard?date=${previous(date)}`)}
         >
           Previous
         </button>
+        &nbsp;
         <button
           className="btn btn-info"
-          style={{ padding: "7px 15px", marginRight: "10px" }}
           onClick={() => history.push(`/dashboard?date=${today()}`)}
         >
           Today
         </button>
+        &nbsp;
         <button
-          className="btn btn-dark"
-          style={{ padding: "7px 15px", marginRight: "10px" }}
+          className="btn btn-outline-dark"
           onClick={() => history.push(`/dashboard?date=${next(date)}`)}
-        >
-          Next
+        >Next
         </button>
       </div>
-      <h3>Reservations for: {date}</h3>
-      <div>
+
+      <h4 className="text-center">Reservations for: {dateString}</h4>
+      </div>
+      <div className="dashboard table-display row mx-1">
+      <div className="col scroll-me">
+        <h3>Reservations</h3>
         <div>{reservationList}</div>
       </div>
-      <div>
-        <h3 className="mt-4 text-center">Tables</h3>
+      <div className="col">
+        <h3>Tables</h3>
         <div>{tablesList}</div>
+      </div>
       </div>
     </main>
   );

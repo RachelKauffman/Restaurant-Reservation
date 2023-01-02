@@ -85,10 +85,11 @@ function Seat() {
                                 {tableOptions}
                             </select>
                         </label>
-                        <button className="btn btn-secondary" type="submit">
+                        <button className="btn btn-outline-primary" type="submit">
                             Submit
                         </button>
-                        <button className="btn btn-secondary" onClick={() => history.goBack()}>
+                        &nbsp;
+                        <button className="btn btn-outline-dark" onClick={() => history.goBack()}>
                             Cancel
                         </button>
                     </form>

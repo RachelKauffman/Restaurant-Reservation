@@ -8,12 +8,11 @@ const history = useHistory();
 
     return(
         <div>
-         
             <form onSubmit={submitHandler}>
                 <div className="form-group">
                     <label htmlFor="first_name">First Name:</label>
                     <input
-                        className="form-control"
+                    className="form-control"
                         id="first_name"
                         name="first_name"
                         type="text"
@@ -22,6 +21,7 @@ const history = useHistory();
                         onChange={changeHandler}
                         value={form.first_name}
                     />
+                    &nbsp;
                     <label htmlFor="last_name">Last Name:</label>
                     <input
                         className="form-control"
@@ -35,7 +35,7 @@ const history = useHistory();
                     />
                     <label htmlFor="mobile_number">Phone Number:</label>
                     <input
-                        className="form-control"
+                    className="form-control"
                         id="mobile_number"
                         name="mobile_number"
                         type="tel"
@@ -46,7 +46,7 @@ const history = useHistory();
                     />
                     <label htmlFor="reservation_date">Reservation Date:</label>
                     <input
-                        className="form-control"
+                    className="form-control"
                         id="reservation_date"
                         name="reservation_date"
                         type="date"
@@ -56,7 +56,7 @@ const history = useHistory();
                     />
                     <label htmlFor="reservation_time">Reservation Time:</label>
                     <input
-                        className="form-control"
+                    className="form-control"
                         id="reservation_time"
                         name="reservation_time"
                         type="time"
@@ -66,7 +66,7 @@ const history = useHistory();
                     />
                     <label htmlFor="people">Number of Guests:</label>
                     <input
-                        className="form-control"
+                    className="form-control"
                         id="people"
                         name="people"
                         type="integer"
@@ -77,9 +77,9 @@ const history = useHistory();
                     />
                 </div>
                 <div>
-                <button className="btn btn-secondary" type="submit" >Submit</button>
+                <button className="btn btn-outline-primary" type="submit" >Submit</button>
                 &nbsp;
-                <button className="btn btn-secondary" type="button" onClick={() => history.goBack()}>Cancel</button>
+                <button className="btn btn-outline-dark" type="button" onClick={() => history.goBack()}>Cancel</button>
                 </div>
             </form>
         </div>

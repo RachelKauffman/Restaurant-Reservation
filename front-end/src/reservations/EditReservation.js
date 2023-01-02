@@ -99,7 +99,7 @@ const EditReservation = ({ date, setDate }) => {
       reservation_date: form.reservation_date,
       reservation_time: form.reservation_time,
       people: Number(form.people),
-      status: "booked",
+      status: "Booked",
     };
     try {
       await updateReservation(updatedReser, abortController.signal);

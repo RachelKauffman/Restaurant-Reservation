@@ -4,6 +4,9 @@ import ErrorAlert from "../layout/ErrorAlert";
 import { createReservation } from "../utils/api";
 import ReservationForm from "./ReservationForm";
 
+const image="restaurant-furniture-hand-drawn-outline-doodle-icon-side-view-restaurant-furniture-table-chairs-vector-sketch-illustration-115076799.jpg"
+
+
 function CreateReservation() {
   const initialForm = {
     first_name: "",
@@ -65,7 +68,7 @@ function CreateReservation() {
       reservation_date: form.reservation_date,
       reservation_time: form.reservation_time,
       people: Number(form.people),
-      status: "booked",
+      status: "Booked",
     };
     try {
       await createReservation(newRes, abortController.signal);
@@ -81,8 +84,10 @@ function CreateReservation() {
 
 
   return (
-    <div>
-     <h1 className="center-text">New Reservation</h1>
+    <div style={{backgroundImage: `url(${image})`,
+     backgroundSize:"cover",
+     backgroundPosition: "center"}}>
+     <h1 className="d-flex text-center">New Reservation</h1>
       <ErrorAlert error={error} />
       <ReservationForm
         form={form}

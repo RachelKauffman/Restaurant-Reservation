@@ -40,20 +40,14 @@ const Search = () => {
   return (
     <div>
       <div
-        className="d-md-flex mb-3"
-        style={{ justifyContent: "center", alignItems: "center" }}
+        className="d-md-flex mb-3 justify-content-center"
+       
       >
         <h3>
           Search for a reservation by phone number
         </h3>
       </div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
+      <div className="d-flex justify-content-center">
         <form onSubmit={(event) => submitHandler(event)}>
           <label htmlFor="mobile_number"></label>
           <input
@@ -62,20 +56,21 @@ const Search = () => {
             onChange={handleChange}
             placeholder="(---) --- ----"
           />
+          &nbsp;
           <button
             type="submit"
-            className="btn btn-dark"
-            style={{ marginLeft: "5px" }}
+            className="btn btn-outline-dark"
           >
             Find
           </button>
         </form>
+        
         <ErrorAlert error={showError} />
         <div>{searchResults}</div>
         {noReservations === true && (
-          <p style={{ color: "white", marginLeft: "10px" }}>
+          <h6>
             No reservations found.
-          </p>
+          </h6>
         )}
       </div>
     </div>

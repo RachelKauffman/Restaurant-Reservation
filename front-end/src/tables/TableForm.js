@@ -52,7 +52,7 @@ const TableForm = () => {
       <div>
         <ErrorAlert className="alert alert-danger" error={error} />
         <div>
-          <h1 className="center-text">
+          <h1>
             Create a New Table
           </h1>
           <form onSubmit={submitHandler}>
@@ -64,7 +64,7 @@ const TableForm = () => {
                 name="table_name"
                 onChange={changeHandler}
                 value={form.table_name}
-                placeholder="Bar #3"
+                placeholder="Table Name"
                 min={2}
               />
             </label>
@@ -81,14 +81,14 @@ const TableForm = () => {
             </label>
             <div>
               <button
-                className="btn btn-secondary shadow"
+                className="btn btn-outline-primary"
                 type="submit"
               >
                 Submit
               </button>
               &nbsp;
               <button
-                className="btn btn-dark shadow "
+                className="btn btn-outline-dark"
                 type="button"
                 onClick={() => history.goBack()}
               >
