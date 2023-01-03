@@ -3,7 +3,6 @@ import { useHistory } from "react-router-dom";
 import useQuery from "../utils/useQuery";
 import { listReservations, listTables } from "../utils/api";
 import { next, previous, today } from "../utils/date-time";
-import ErrorAlert from "../layout/ErrorAlert";
 import ViewReservation from "../reservations/ViewReservation";
 import Tables from "../tables/Tables";
 
@@ -16,10 +15,8 @@ import Tables from "../tables/Tables";
 
 function Dashboard({ date }) {
   const [reservations, setReservations] = useState([]);
-  const [reservationsError, setReservationsError] = useState(null);
 
   const [tables, setTables] = useState([]);
-  const [tableError, setTableError] = useState(null);
 
   const history = useHistory();
  //will use date from url for each new date
@@ -40,12 +37,10 @@ function Dashboard({ date }) {
 
     async function loadDashboard() {
       try {
-        setReservationsError([]);
         const reservationDate = await listReservations({ date }, abortController.signal);
         setReservations(reservationDate);
       } catch (error) {
         setReservations([]);
-        setReservationsError([error.message]);
       }
     }
     loadDashboard();
@@ -58,12 +53,10 @@ function Dashboard({ date }) {
 
     async function loadTables() {
       try {
-        setTableError([]);
         const tableList = await listTables(abortController.signal);
         setTables(tableList);
       } catch (error) {
         setTables([]);
-        setTableError([error.message]);
       }
     }
     loadTables();
