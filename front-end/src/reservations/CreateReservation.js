@@ -4,8 +4,6 @@ import ErrorAlert from "../layout/ErrorAlert";
 import { createReservation } from "../utils/api";
 import ReservationForm from "./ReservationForm";
 
-const image="restaurant-furniture-hand-drawn-outline-doodle-icon-side-view-restaurant-furniture-table-chairs-vector-sketch-illustration-115076799.jpg"
-
 
 function CreateReservation() {
   const initialForm = {
@@ -84,9 +82,7 @@ function CreateReservation() {
 
 
   return (
-    <div style={{backgroundImage: `url(${image})`,
-     backgroundSize:"cover",
-     backgroundPosition: "center"}}>
+    <div>
      <h1 className="d-flex text-center">New Reservation</h1>
       <ErrorAlert error={error} />
       <ReservationForm
