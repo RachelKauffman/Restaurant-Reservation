@@ -22,7 +22,9 @@ app.use("/tables", tablesRouter)
 app.use(notFound);
 app.use(errorHandler);
 
-
+app.get('/*', function (req, res) {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+  });
 
 
 module.exports = app;
