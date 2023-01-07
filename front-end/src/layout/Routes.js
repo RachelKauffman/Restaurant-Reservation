@@ -5,9 +5,10 @@ import CreateReservation from "../reservations/CreateReservation";
 import Seat from "../tables/seat";
 import EditReservation from "../reservations/EditReservation";
 import TableForm from "../tables/TableForm";
+import Search from "../search/search";
 import NotFound from "./NotFound";
 import { today } from "../utils/date-time";
-import Search from "../search/search";
+
 
 /**
  * Defines all the routes for the application.
